@@ -1,0 +1,118 @@
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Weather Test</title>
+  <meta http-equiv="cache-control" content="no-cache" />
+  <meta http-equiv="expires" content="0">
+  <script src="test/js/jquery.js"></script>
+  <style>
+    @font-face {
+     font-family: 'MeteoconsRegular';
+     src: url('test/font/meteocons-webfont.eot');
+     src: url('test/font/meteocons-webfont.eot?#iefix') format('embedded-opentype'),
+       url('test/font/meteocons-webfont.woff') format('woff'),
+       url('test/font/meteocons-webfont.ttf') format('truetype'),
+       url('test/font/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+     font-weight: normal;
+     font-style: normal;
+   }
+   [class^="icon"] {
+     margin-right: 0.5ex;
+     display: inline-block;
+     vertical-align: bottom;
+
+     text-decoration: none;
+     font-style: normal;
+     font-size: 1.5em;
+   }
+
+   [class^="icon"]:before {
+     font-family: 'MeteoconsRegular';
+   }
+
+   /* Thunderstorm */
+   [class^="icon-2"]:before {
+     content: "P";
+   }
+
+   /* Drizzle */
+   [class^="icon-3"]:before {
+     content: "Q";
+   }
+
+   /* Rain */
+   [class^="icon-5"]:before {
+     content: "R";
+   }
+
+   /* Snow */
+   [class^="icon-6"]:before {
+     content: "W";
+   }
+
+   /* Sleet */
+   [class^="icon-611"]:before {
+     content: "X";
+   }
+
+   /* Atmosphere */
+   [class^="icon-7"]:before {
+     content: "E";
+   }
+
+   /* Clouds */
+   [class^="icon-8"]:before {
+     content: "H";
+   }
+
+   /* Sunny */
+   [class^="icon-800"]:before {
+     content: "B";
+   }
+
+   /* Broken Clouds */
+   [class^="icon-803"]:before,
+   [class^="icon-804"]:before {
+     content: "Y";
+   }
+
+   /* Clouds */
+   [class^="icon-9"]:before {
+     content: "%";
+   }
+  </style>
+</head>
+<body>
+  <h1>Weather.js</h1>
+  <h2 id="weather"><i></i><span class="conditions"></span></h2>
+  <h4><small><span class="last-update"></span><span class="when"></span></small></h4>
+
+  <script src="./weather.js"></script>
+  <script src="node_modules/moment/moment.js"></script>
+  <script>
+   blerg = 0; //temporary, for clearing timer from the console
+   $(function() {
+     var weatherCity ='<span style="text-decoration: underline;">' + 'Omaha' + '</span>';
+     var lastUpdate;
+     var updateTimeInterval = function () {
+       //console.log('times change: ' + lastUpdate.fromNow());
+       $('.when').text(lastUpdate.fromNow());
+       blerg=setTimeout(updateTimeInterval, 55000);
+     };
+     var updateTime = function () {
+       lastUpdate = moment();
+       $('.last-update').html('Last Updated for ' + weatherCity + ': ');
+       $('.when').text(lastUpdate.fromNow());
+       setTimeout(updateTimeInterval, 55000);
+     };
+     Weather.getCurrent(weatherCity, function(current) {
+       //noinspection JSJQueryEfficiency
+       $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
+       //noinspection JSJQueryEfficiency
+       $('#weather').find('i').addClass('icon-' + current.data.weather[0].id);
+       updateTime();
+     });
+   });
+  </script>
+</body>
+</html>

@@ -26,14 +26,14 @@
 
     Weather.getCurrent = function(city, callback) {
       var _this = this;
-      return this._getJSON("http://openweathermap.org/data/2.1/find/city?q=" + (encodeURIComponent(city)) + "&cnt=1", function(data) {
+      return this._getJSON("http://api.openweathermap.org/data/2.5/weather?q=" + (encodeURIComponent(city)) + "&cnt=1", function(data) {
         return callback(new Weather.Current(data));
       });
     };
 
     Weather.getForecast = function(city, callback) {
       var _this = this;
-      return this._getJSON("http://openweathermap.org/data/2.1/forecast/city?q=" + (encodeURIComponent(city)) + "&cnt=1", function(data) {
+      return this._getJSON("http://api.openweathermap.org/data/2.5/forecast/city?q=" + (encodeURIComponent(city)) + "&cnt=1", function(data) {
         return callback(new Weather.Forecast(data));
       });
     };
@@ -126,11 +126,11 @@
 
     Current.prototype.temperature = function() {
       var temperature;
-      return temperature = this.data.list[0].main.temp;
+      return temperature = this.data.main.temp;
     };
 
     Current.prototype.conditions = function() {
-      return this.data.list[0].weather[0].description;
+      return this.data.weather[0].description;
     };
 
     return Current;

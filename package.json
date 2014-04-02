@@ -28,7 +28,8 @@
         "uglify-js" : "latest",
         "mocha"  : "latest",
         "expect.js"  : "latest",
-        "nock" : "latest"
+        "nock" : "latest",
+				"moment" : "latest"
     },
     "scripts": {
         "test": "make test"

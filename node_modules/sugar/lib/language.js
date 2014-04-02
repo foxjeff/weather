@@ -1,9 +1,11 @@
 
+  'use strict';
+
   /***
    *
    * @package Language
    * @dependency string
-   * @description Normalizing accented characters, character width conversion, Hiragana and Katakana conversions.
+   * @description Detecting language by character block. Full-width <-> half-width character conversion. Hiragana and Katakana conversions.
    *
    ***/
 
@@ -11,12 +13,6 @@
    * String module
    *
    ***/
-
-
-
-  var NormalizeMap,
-      NormalizeReg = '',
-      NormalizeSource;
 
 
   /***
@@ -104,14 +100,16 @@
 
   // Support for converting character widths and katakana to hiragana.
 
+  var HALF_WIDTH_TO_FULL_WIDTH_TRAVERSAL = 65248;
+
   var widthConversionRanges = [
-    { type: 'a', shift: 65248, start: 65,  end: 90  },
-    { type: 'a', shift: 65248, start: 97,  end: 122 },
-    { type: 'n', shift: 65248, start: 48,  end: 57  },
-    { type: 'p', shift: 65248, start: 33,  end: 47  },
-    { type: 'p', shift: 65248, start: 58,  end: 64  },
-    { type: 'p', shift: 65248, start: 91,  end: 96  },
-    { type: 'p', shift: 65248, start: 123, end: 126 }
+    { type: 'a', start: 65,  end: 90  },
+    { type: 'a', start: 97,  end: 122 },
+    { type: 'n', start: 48,  end: 57  },
+    { type: 'p', start: 33,  end: 47  },
+    { type: 'p', start: 58,  end: 64  },
+    { type: 'p', start: 91,  end: 96  },
+    { type: 'p', start: 123, end: 126 }
   ];
 
   var WidthConversionTable;
@@ -146,8 +144,9 @@
       'hankaku': {}
     };
     widthConversionRanges.forEach(function(r) {
-      getRange(r.start, r.end, function(n) {
-        setWidthConversion(r.type, chr(n), chr(n + r.shift));
+      simpleRepeat(r.end - r.start + 1, function(n) {
+        n += r.start;
+        setWidthConversion(r.type, chr(n), chr(n + HALF_WIDTH_TO_FULL_WIDTH_TRAVERSAL));
       });
     });
     zenkakuKatakana.each(function(c, i) {
@@ -174,128 +173,7 @@
   }
 
 
-
-
-  function buildNormalizeMap() {
-    NormalizeMap = {};
-    iterateOverObject(NormalizeSource, function(normalized, str) {
-      str.split('').forEach(function(character) {
-        NormalizeMap[character] = normalized;
-      });
-      NormalizeReg += str;
-    });
-    NormalizeReg = regexp('[' + NormalizeReg + ']', 'g');
-  }
-
-  NormalizeSource = {
-    'A':  'AⒶＡÀÁÂẦẤẪẨÃĀĂẰẮẴẲȦǠÄǞẢÅǺǍȀȂẠẬẶḀĄȺⱯ',
-    'B':  'BⒷＢḂḄḆɃƂƁ',
-    'C':  'CⒸＣĆĈĊČÇḈƇȻꜾ',
-    'D':  'DⒹＤḊĎḌḐḒḎĐƋƊƉꝹ',
-    'E':  'EⒺＥÈÉÊỀẾỄỂẼĒḔḖĔĖËẺĚȄȆẸỆȨḜĘḘḚƐƎ',
-    'F':  'FⒻＦḞƑꝻ',
-    'G':  'GⒼＧǴĜḠĞĠǦĢǤƓꞠꝽꝾ',
-    'H':  'HⒽＨĤḢḦȞḤḨḪĦⱧⱵꞍ',
-    'I':  'IⒾＩÌÍÎĨĪĬİÏḮỈǏȈȊỊĮḬƗ',
-    'J':  'JⒿＪĴɈ',
-    'K':  'KⓀＫḰǨḲĶḴƘⱩꝀꝂꝄꞢ',
-    'L':  'LⓁＬĿĹĽḶḸĻḼḺŁȽⱢⱠꝈꝆꞀ',
-    'M':  'MⓂＭḾṀṂⱮƜ',
-    'N':  'NⓃＮǸŃÑṄŇṆŅṊṈȠƝꞐꞤ',
-    'O':  'OⓄＯÒÓÔỒỐỖỔÕṌȬṎŌṐṒŎȮȰÖȪỎŐǑȌȎƠỜỚỠỞỢỌỘǪǬØǾƆƟꝊꝌ',
-    'P':  'PⓅＰṔṖƤⱣꝐꝒꝔ',
-    'Q':  'QⓆＱꝖꝘɊ',
-    'R':  'RⓇＲŔṘŘȐȒṚṜŖṞɌⱤꝚꞦꞂ',
-    'S':  'SⓈＳẞŚṤŜṠŠṦṢṨȘŞⱾꞨꞄ',
-    'T':  'TⓉＴṪŤṬȚŢṰṮŦƬƮȾꞆ',
-    'U':  'UⓊＵÙÚÛŨṸŪṺŬÜǛǗǕǙỦŮŰǓȔȖƯỪỨỮỬỰỤṲŲṶṴɄ',
-    'V':  'VⓋＶṼṾƲꝞɅ',
-    'W':  'WⓌＷẀẂŴẆẄẈⱲ',
-    'X':  'XⓍＸẊẌ',
-    'Y':  'YⓎＹỲÝŶỸȲẎŸỶỴƳɎỾ',
-    'Z':  'ZⓏＺŹẐŻŽẒẔƵȤⱿⱫꝢ',
-    'a':  'aⓐａẚàáâầấẫẩãāăằắẵẳȧǡäǟảåǻǎȁȃạậặḁąⱥɐ',
-    'b':  'bⓑｂḃḅḇƀƃɓ',
-    'c':  'cⓒｃćĉċčçḉƈȼꜿↄ',
-    'd':  'dⓓｄḋďḍḑḓḏđƌɖɗꝺ',
-    'e':  'eⓔｅèéêềếễểẽēḕḗĕėëẻěȅȇẹệȩḝęḙḛɇɛǝ',
-    'f':  'fⓕｆḟƒꝼ',
-    'g':  'gⓖｇǵĝḡğġǧģǥɠꞡᵹꝿ',
-    'h':  'hⓗｈĥḣḧȟḥḩḫẖħⱨⱶɥ',
-    'i':  'iⓘｉìíîĩīĭïḯỉǐȉȋịįḭɨı',
-    'j':  'jⓙｊĵǰɉ',
-    'k':  'kⓚｋḱǩḳķḵƙⱪꝁꝃꝅꞣ',
-    'l':  'lⓛｌŀĺľḷḹļḽḻſłƚɫⱡꝉꞁꝇ',
-    'm':  'mⓜｍḿṁṃɱɯ',
-    'n':  'nⓝｎǹńñṅňṇņṋṉƞɲŉꞑꞥ',
-    'o':  'oⓞｏòóôồốỗổõṍȭṏōṑṓŏȯȱöȫỏőǒȍȏơờớỡởợọộǫǭøǿɔꝋꝍɵ',
-    'p':  'pⓟｐṕṗƥᵽꝑꝓꝕ',
-    'q':  'qⓠｑɋꝗꝙ',
-    'r':  'rⓡｒŕṙřȑȓṛṝŗṟɍɽꝛꞧꞃ',
-    's':  'sⓢｓśṥŝṡšṧṣṩșşȿꞩꞅẛ',
-    't':  'tⓣｔṫẗťṭțţṱṯŧƭʈⱦꞇ',
-    'u':  'uⓤｕùúûũṹūṻŭüǜǘǖǚủůűǔȕȗưừứữửựụṳųṷṵʉ',
-    'v':  'vⓥｖṽṿʋꝟʌ',
-    'w':  'wⓦｗẁẃŵẇẅẘẉⱳ',
-    'x':  'xⓧｘẋẍ',
-    'y':  'yⓨｙỳýŷỹȳẏÿỷẙỵƴɏỿ',
-    'z':  'zⓩｚźẑżžẓẕƶȥɀⱬꝣ',
-    'AA': 'Ꜳ',
-    'AE': 'ÆǼǢ',
-    'AO': 'Ꜵ',
-    'AU': 'Ꜷ',
-    'AV': 'ꜸꜺ',
-    'AY': 'Ꜽ',
-    'DZ': 'ǱǄ',
-    'Dz': 'ǲǅ',
-    'LJ': 'Ǉ',
-    'Lj': 'ǈ',
-    'NJ': 'Ǌ',
-    'Nj': 'ǋ',
-    'OI': 'Ƣ',
-    'OO': 'Ꝏ',
-    'OU': 'Ȣ',
-    'TZ': 'Ꜩ',
-    'VY': 'Ꝡ',
-    'aa': 'ꜳ',
-    'ae': 'æǽǣ',
-    'ao': 'ꜵ',
-    'au': 'ꜷ',
-    'av': 'ꜹꜻ',
-    'ay': 'ꜽ',
-    'dz': 'ǳǆ',
-    'hv': 'ƕ',
-    'lj': 'ǉ',
-    'nj': 'ǌ',
-    'oi': 'ƣ',
-    'ou': 'ȣ',
-    'oo': 'ꝏ',
-    'ss': 'ß',
-    'tz': 'ꜩ',
-    'vy': 'ꝡ'
-  };
-
-  extend(string, true, false, {
-    /***
-     * @method normalize()
-     * @returns String
-     * @short Returns the string with accented and non-standard Latin-based characters converted into ASCII approximate equivalents.
-     * @example
-     *
-     *   'á'.normalize()                  -> 'a'
-     *   'Ménage à trois'.normalize()     -> 'Menage a trois'
-     *   'Volkswagen'.normalize()         -> 'Volkswagen'
-     *   'ＦＵＬＬＷＩＤＴＨ'.normalize() -> 'FULLWIDTH'
-     *
-     ***/
-    'normalize': function() {
-      if(!NormalizeMap) {
-        buildNormalizeMap();
-      }
-      return this.replace(NormalizeReg, function(character) {
-        return NormalizeMap[character];
-      });
-    },
+  extend(string, true, true, {
 
     /***
      * @method hankaku([mode] = 'all')
