@@ -26,11 +26,9 @@
   <script src="./weather.js"></script>
 
   <script>
-//    var wCity;
     angular.module('weatherApp', [])
         .run(function($rootScope) {
           $rootScope.wCity = 'Omaha';
-//          wCity = $rootScope.wCity;
         })
         .controller('WeatherCtrl', function($scope) {
           $scope.doUpdate = function() {
@@ -40,8 +38,7 @@
 
     blerg = 0; //temporary, for clearing timer from the console
 
-// TODO remove jQuery onReady function and doit in angular way
-// TODO do i need to have a $Watch on wCity?
+// TODO icon isn't changing on subsequent updates
 
     var updateConditions = function(wCity) {
       var weatherCity ='<span style="text-decoration: underline;">' + wCity + '</span>';
@@ -59,7 +56,7 @@
       };
       Weather.getCurrent(wCity, function(current) {
         $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
-        $('#weather').find('i').addClass('icon-' + current.data.weather[0].id);
+        $('#weather').find('i').removeClass().addClass('icon-' + current.data.weather[0].id);
         updateTime();
       });
     };
