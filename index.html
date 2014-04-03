@@ -1,10 +1,15 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Weather Test</title>
+  <title>Weather Fun</title>
   <meta http-equiv="cache-control" content="no-cache" />
   <meta http-equiv="expires" content="0">
   <script src="test/js/jquery.js"></script>
+
+  <script src="node_modules/moment/moment.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="./weather.js"></script>
+
   <style>
     @font-face {
      font-family: 'MeteoconsRegular';
@@ -82,37 +87,48 @@
    }
   </style>
 </head>
-<body>
-  <h1>Weather.js</h1>
+<body ng-app = 'weatherApp'>
+  <h1>Weather Fun</h1>
   <h2 id="weather"><i></i><span class="conditions"></span></h2>
   <h4><small><span class="last-update"></span><span class="when"></span></small></h4>
 
-  <script src="./weather.js"></script>
-  <script src="node_modules/moment/moment.js"></script>
+  <input type="text" ng-model="wCity" placeholder="City Wok"/>
+  <h3>{{ wCity }}</h3>
+
+
   <script>
-   blerg = 0; //temporary, for clearing timer from the console
-   $(function() {
-     var weatherCity ='<span style="text-decoration: underline;">' + 'Omaha' + '</span>';
-     var lastUpdate;
-     var updateTimeInterval = function () {
-       //console.log('times change: ' + lastUpdate.fromNow());
-       $('.when').text(lastUpdate.fromNow());
-       blerg=setTimeout(updateTimeInterval, 55000);
-     };
-     var updateTime = function () {
-       lastUpdate = moment();
-       $('.last-update').html('Last Updated for ' + weatherCity + ': ');
-       $('.when').text(lastUpdate.fromNow());
-       setTimeout(updateTimeInterval, 55000);
-     };
-     Weather.getCurrent(weatherCity, function(current) {
-       //noinspection JSJQueryEfficiency
-       $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
-       //noinspection JSJQueryEfficiency
-       $('#weather').find('i').addClass('icon-' + current.data.weather[0].id);
-       updateTime();
-     });
-   });
+    var wCity;
+    angular.module('weatherApp', [])
+        .run(function($rootScope) {
+          $rootScope.wCity = 'Omaha';
+          wCity = $rootScope.wCity;
+        });
+
+    blerg = 0; //temporary, for clearing timer from the console
+
+// TODO remove jQuery onReady function and doit in angular way
+// TODO do i need to have a $Watch on wCity?
+
+    $(function() {
+      var weatherCity ='<span style="text-decoration: underline;">' + wCity + '</span>';
+      var lastUpdate;
+      var updateTimeInterval = function () {
+        //console.log('times change: ' + lastUpdate.fromNow());
+        $('.when').text(lastUpdate.fromNow());
+        blerg=setTimeout(updateTimeInterval, 55000);
+      };
+      var updateTime = function () {
+        lastUpdate = moment();
+        $('.last-update').html('Last Updated for ' + weatherCity + ': ');
+        $('.when').text(lastUpdate.fromNow());
+        setTimeout(updateTimeInterval, 55000);
+      };
+      Weather.getCurrent(weatherCity, function(current) {
+        $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
+        $('#weather').find('i').addClass('icon-' + current.data.weather[0].id);
+        updateTime();
+      });
+    });
   </script>
 </body>
 </html>
