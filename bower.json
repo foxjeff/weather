@@ -1,0 +1,20 @@
+{
+  "name": "weather",
+  "main": "index.html",
+  "version": "0.0.0",
+  "homepage": "https://github.com/foxjeff/weather",
+  "moduleType": [
+    "amd"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.0",
+    "moment": "~2.5.1"
+  }
+}
