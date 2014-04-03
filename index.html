@@ -15,8 +15,7 @@
 
   <div class="container-fluid" ng-controller="WeatherCtrl">
     <input type="text" ng-model="wCity" placeholder="City Wok"/>
-    <!--<button class="button" onclick="updateConditions()" >DoIt</button>-->
-    <button class="button" ng-click="doit()">DoIt</button>
+    <button class="button" ng-click="doUpdate()" >DoUpdate</button>
     <h3>{{ wCity }}</h3>
   </div>
 
@@ -34,7 +33,9 @@
 //          wCity = $rootScope.wCity;
         })
         .controller('WeatherCtrl', function($scope) {
-          $scope.doit = function() {console.log("doing it..")};
+          $scope.doUpdate = function() {
+            updateConditions($scope.wCity);
+          };
         });
 
     blerg = 0; //temporary, for clearing timer from the console
@@ -42,8 +43,8 @@
 // TODO remove jQuery onReady function and doit in angular way
 // TODO do i need to have a $Watch on wCity?
 
-    var updateConditions = function() {
-      var weatherCity ='<span style="text-decoration: underline;">' + 'Austin' + '</span>';
+    var updateConditions = function(wCity) {
+      var weatherCity ='<span style="text-decoration: underline;">' + wCity + '</span>';
       var lastUpdate;
       var updateTimeInterval = function () {
         //console.log('times change: ' + lastUpdate.fromNow());
@@ -56,7 +57,7 @@
         $('.when').text(lastUpdate.fromNow());
         setTimeout(updateTimeInterval, 55000);
       };
-      Weather.getCurrent('Austin', function(current) {
+      Weather.getCurrent(wCity, function(current) {
         $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
         $('#weather').find('i').addClass('icon-' + current.data.weather[0].id);
         updateTime();
