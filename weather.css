@@ -1,0 +1,72 @@
+@font-face {
+    font-family: 'MeteoconsRegular';
+    src: url('test/font/meteocons-webfont.eot');
+    src: url('test/font/meteocons-webfont.eot?#iefix') format('embedded-opentype'), url('test/font/meteocons-webfont.woff') format('woff'), url('test/font/meteocons-webfont.ttf') format('truetype'), url('test/font/meteocons-webfont.svg#MeteoconsRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon"] {
+    margin-right: 0.5ex;
+    display: inline-block;
+    vertical-align: bottom;
+
+    text-decoration: none;
+    font-style: normal;
+    font-size: 1.5em;
+}
+
+[class^="icon"]:before {
+    font-family: 'MeteoconsRegular';
+}
+
+/* Thunderstorm */
+[class^="icon-2"]:before {
+    content: "P";
+}
+
+/* Drizzle */
+[class^="icon-3"]:before {
+    content: "Q";
+}
+
+/* Rain */
+[class^="icon-5"]:before {
+    content: "R";
+}
+
+/* Snow */
+[class^="icon-6"]:before {
+    content: "W";
+}
+
+/* Sleet */
+[class^="icon-611"]:before {
+    content: "X";
+}
+
+/* Atmosphere */
+[class^="icon-7"]:before {
+    content: "E";
+}
+
+/* Clouds */
+[class^="icon-8"]:before {
+    content: "H";
+}
+
+/* Sunny */
+[class^="icon-800"]:before {
+    content: "B";
+}
+
+/* Broken Clouds */
+[class^="icon-803"]:before,
+[class^="icon-804"]:before {
+    content: "Y";
+}
+
+/* Clouds */
+[class^="icon-9"]:before {
+    content: "%";
+}
