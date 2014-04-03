@@ -1,10 +1,9 @@
 ## Weather Fun
 
-### \*\*City input is not hooked up atm\**
 ### TODOS
 
-- get rid of jQuery function and make everything angular
-- button for update function and on city change
+- in progress -- get rid of jQuery function and make everything angular
+- done -- button for update function and on city change
 - cache id's for already fetched cities
 - display current conditions, etc. as "cards"
     - add the rest of the current cond. info
@@ -12,7 +11,7 @@
 - allow drag'n'drop to reorder cards
 - set a home city
 - still need to display forecast
-- add history (i think there is another openweathermap.org nodel library that does this)
+- add history (i think there is another openweathermap.org node library that does this)
 - graphing of history
     - yesterday
     - this day last week/month/year

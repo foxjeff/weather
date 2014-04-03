@@ -15,7 +15,7 @@
 
   <div class="container-fluid" ng-controller="WeatherCtrl">
     <input type="text" ng-model="wCity" placeholder="City Wok"/>
-    <button class="button" ng-click="doUpdate()" >DoUpdate</button>
+    <button class="button" ng-click="doUpdate()" >Do Update</button>
     <h3>{{ wCity }}</h3>
   </div>
 
@@ -38,9 +38,13 @@
 
     blerg = 0; //temporary, for clearing timer from the console
 
-// TODO icon isn't changing on subsequent updates
+// Done fix timer
+// TODO get update to happen on <return>
+// Done need to escape the city string so states and countries work (more testing)
+// TODO some cities don't return complete data (more testing)
 
     var updateConditions = function(wCity) {
+      clearTimeout(blerg);
       var weatherCity ='<span style="text-decoration: underline;">' + wCity + '</span>';
       var lastUpdate;
       var updateTimeInterval = function () {
