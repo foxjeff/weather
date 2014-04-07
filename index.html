@@ -10,13 +10,21 @@
 
 <body ng-app = 'weatherApp'>
   <h1>Weather Fun</h1>
-  <h2 id="weather"><i></i><span class="conditions"></span></h2>
-  <h4><small><span class="last-update"></span><span class="when"></span></small></h4>
-
+  <div class="container">
+    <h2 id="weather"><i></i><span class="conditions">Enter a City</span></h2>
+    <h4><small><span class="last-update"></span><span class="when"></span></small></h4>
+  </div>
   <div class="container-fluid" ng-controller="WeatherCtrl">
-    <input type="text" ng-model="wCity" placeholder="City Wok"/>
-    <button class="button" ng-click="doUpdate()" >Do Update</button>
-    <h3>{{ wCity }}</h3>
+
+    <form ng-submit="doUpdate()">
+      <input type="text" ng-model="wCity" placeholder="Enter a City"/>
+    <!--<button class="button" ng-click="doUpdate()" >Do Update</button> -->
+    </form>
+
+    <!--<h3>{{ wCity | lowercase }}</h3> -->
+    <!-- <div ng-controller="test1">-->
+    <!--  <button class="button" ng-click="dothis()">ok</button>-->
+    <!--</div>-->
   </div>
 
 
@@ -25,7 +33,7 @@
   <script src="scripts/vendor/angular/angular.js"></script>
   <script src="./weather.js"></script>
 
-  <script>
+  <script type='text/javascript'>
     angular.module('weatherApp', [])
         .run(function($rootScope) {
           $rootScope.wCity = 'Omaha';
@@ -33,34 +41,41 @@
         .controller('WeatherCtrl', function($scope) {
           $scope.doUpdate = function() {
             updateConditions($scope.wCity);
+            $scope.wCity = "";
+          };
+        })
+        .controller('test1', function($scope) {
+          $scope.dothis = function () {
+            console.log('this n that');
           };
         });
 
     blerg = 0; //temporary, for clearing timer from the console
 
-// Done fix timer
+// TODO fix timer ??, use angular $timeout or $interval
+// TODO also won't want to clear timeouts when there are multiple simultaneous cards
 // TODO get update to happen on <return>
 // Done need to escape the city string so states and countries work (more testing)
 // TODO some cities don't return complete data (more testing)
+// TODO change ajaxy things in weather.js to use angular
+   TODO add current time to display
+   TODO make the card-like display
 
     var updateConditions = function(wCity) {
-      clearTimeout(blerg);
       var weatherCity ='<span style="text-decoration: underline;">' + wCity + '</span>';
       var lastUpdate;
-      var updateTimeInterval = function () {
+
+      var updateTime= function () {
         //console.log('times change: ' + lastUpdate.fromNow());
+        clearTimeout(blerg);
         $('.when').text(lastUpdate.fromNow());
-        blerg=setTimeout(updateTimeInterval, 55000);
-      };
-      var updateTime = function () {
-        lastUpdate = moment();
-        $('.last-update').html('Last Updated for ' + weatherCity + ': ');
-        $('.when').text(lastUpdate.fromNow());
-        setTimeout(updateTimeInterval, 55000);
+        blerg = setTimeout(updateTime, 15000);
       };
       Weather.getCurrent(wCity, function(current) {
         $('#weather').find('.conditions').text(Weather.kelvinToFahrenheit(current.temperature()).toFixed() + '° and ' + current.conditions());
         $('#weather').find('i').removeClass().addClass('icon-' + current.data.weather[0].id);
+        lastUpdate = moment();
+        $('.last-update').html('Last Updated for ' + weatherCity + ': ');
         updateTime();
       });
     };

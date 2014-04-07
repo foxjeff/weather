@@ -70,3 +70,29 @@
 [class^="icon-9"]:before {
     content: "%";
 }
+body {
+   background: none repeat scroll 0 0 #FFFFE0;
+}
+h1 {
+  background: none repeat scroll 0 0 #90EE90;
+  color: #000000;
+  font-family: georgia;
+  text-align: center;
+  width: 100%;
+}
+h2 {
+  margin-left: 20px;
+}
+h3 {
+  font-variant: small-caps;
+}
+.container {
+  background: none repeat scroll 0 0 #FFD700;
+  border: 0.01em solid #808080;
+  margin-bottom: 10px;
+  padding-left: 0;
+  width: 33%;
+}
+h4 {
+  text-align: center;
+}
